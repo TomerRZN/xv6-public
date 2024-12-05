@@ -12,7 +12,7 @@
 #include "proc.h"
 
 struct cpu cpus[NCPU];
-int ncpu;
+int ncpu = 1;
 uchar ioapicid;
 
 static uchar
