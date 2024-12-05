@@ -56,13 +56,8 @@ trap(struct trapframe *tf)
     }
     // Increment the tick counter for the currently running process
     if (myproc() && myproc()->state == RUNNING) {
-      cprintf("Process %d ticks before increment: %d\n", myproc()->pid, myproc()->ticks);
       myproc()->ticks++;
       cprintf("Process %d ticks after increment: %d\n", myproc()->pid, myproc()->ticks);
-
-      if (myproc()->ticks >= 10) {
-        cprintf("Process %d yielding after %d ticks\n", myproc()->pid, myproc()->ticks);
-        yield(); // Give up the CPU
       }
     }
     lapiceoi();
@@ -114,8 +109,7 @@ trap(struct trapframe *tf)
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
   if(myproc() && myproc()->state == RUNNING &&
-     tf->trapno == T_IRQ0+IRQ_TIMER)
-    cprintf("Yielding\n");
+     tf->trapno == T_IRQ0+IRQ_TIMER & myproc()->ticks >= 10)
     yield();
 
   // Check if the process has been killed since we yielded
