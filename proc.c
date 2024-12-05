@@ -401,6 +401,7 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
+  cprintf("Yield\n");
   sched();
   release(&ptable.lock);
 }
