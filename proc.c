@@ -340,7 +340,7 @@ scheduler(void)
 
       // Print process ID when it starts
       if(p->ticks == 0) {
-        cprintf("Running process ID: %d\n", p->pid);
+        cprintf("CPU: %d, Running process ID: %d\n", cpuid(), p->pid);
       }
 
       // Switch to chosen process.  It is the process's job
@@ -357,7 +357,7 @@ scheduler(void)
       // Reset ticks after the process yields.
       if (p->state == RUNNABLE) {
         p->ticks = 0;
-        cprintf("Process ID: %d ran for %d ticks\n", p->pid, p->ticks);
+        cprintf("CPU: %d, Process ID: %d ran for %d ticks\n", cpuid(), p->pid, p->ticks);
       }
 
       // Process is done running for now.
