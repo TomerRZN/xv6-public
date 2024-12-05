@@ -352,9 +352,12 @@ scheduler(void)
       switchkvm();
 
       // Log runtime when the process yields
-      cprintf("Process ID: %d ran for %d ticks\n", p->pid, p->ticks);
-      p->ticks = 0;
-      
+      // Reset ticks after the process yields.
+      if (p->state == RUNNABLE) {
+        p->ticks = 0;
+        cprintf("Process ID: %d ran for %d ticks\n", p->pid, p->ticks);
+      }
+
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
