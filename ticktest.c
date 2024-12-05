@@ -5,7 +5,7 @@
 #define NUM_PROCESSES 3  // Number of child processes
 
 void workload(int id) {
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 5; i++) {
     printf(1, "Process %d: iteration %d\n", id, i);
     // Sleep to make sure the CPU is not fully occupied
     sleep(10);
