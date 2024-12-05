@@ -112,6 +112,8 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  p->ticks = 0;
+
   return p;
 }
 
@@ -345,7 +347,6 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-      p->ticks = 0;
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
