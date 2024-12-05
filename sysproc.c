@@ -96,3 +96,30 @@ sys_hello(void)
   cprintf("Hello from xv6!\n");
   return 0;
 }
+
+
+int
+sys_setpriority(void)
+{
+  int pid, priority;
+  struct proc *p;
+
+  // Get args
+  if(argint(0, &pid) < 0 || argint(1, &priority) < 0)
+    return -1;
+
+
+  // Modify the priority of the process with the given PID
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->pid == pid) {
+      p->priority = priority;  // Update priority
+      release(&ptable.lock);
+      return 0;  // Success
+    }
+  }
+
+  // Fallback
+  release(&ptable.lock);
+  return -1;
+}

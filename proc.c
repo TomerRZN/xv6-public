@@ -112,6 +112,8 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  p->priority = 10; // Set default
+
   return p;
 }
 
@@ -323,35 +325,38 @@ void
 scheduler(void)
 {
   struct proc *p;
-  struct cpu *c = mycpu();
-  c->proc = 0;
-  
+  struct proc *selected_proc;
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
+    selected_proc = 0;  // Reset selected process pointer
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
+    // Iterate through the process table to find the highest-priority RUNNABLE process
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if(p->state == RUNNABLE) {
+        if(selected_proc == 0 || p->priority < selected_proc->priority) {
+          selected_proc = p;  // Update to the process with the highest priority
+        }
+      }
+    }
+
+    // If a process is selected, run it
+    if(selected_proc) {
+      p = selected_proc;
+      proc = p;
       switchuvm(p);
       p->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&cpu->scheduler, p->context);
       switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+      proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
 
