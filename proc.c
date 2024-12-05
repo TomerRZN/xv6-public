@@ -112,7 +112,9 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  // Debug print the process starting
   p->ticks = 0;
+  cprintf("Creating process: %d\n", p->pid);
 
   return p;
 }
@@ -338,11 +340,6 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
-      // Print process ID when it starts
-      if(p->ticks == 0) {
-        cprintf("CPU: %d, Running process ID: %d\n", cpuid(), p->pid);
-      }
-
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
@@ -356,8 +353,8 @@ scheduler(void)
       // Log runtime when the process yields
       // Reset ticks after the process yields.
       if (p->state == RUNNABLE) {
-        p->ticks = 0;
         cprintf("CPU: %d, Process ID: %d ran for %d ticks\n", cpuid(), p->pid, p->ticks);
+        p->ticks = 0;
       }
 
       // Process is done running for now.
