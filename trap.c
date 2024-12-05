@@ -58,7 +58,6 @@ trap(struct trapframe *tf)
     if (myproc() && myproc()->state == RUNNING) {
       myproc()->ticks++;
       cprintf("Process %d ticks after increment: %d\n", myproc()->pid, myproc()->ticks);
-      }
     }
     lapiceoi();
     break;
