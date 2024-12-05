@@ -339,7 +339,9 @@ scheduler(void)
         continue;
 
       // Print process ID when it starts
-      cprintf("Running process ID: %d\n", p->pid);
+      if(p->ticks == 0) {
+        cprintf("Running process ID: %d\n", p->pid);
+      }
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
