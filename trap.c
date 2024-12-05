@@ -45,7 +45,7 @@ trap(struct trapframe *tf)
       exit();
     return;
   }
-  cprintf("Process %d got trap! number: %d\n", myproc()->pid, tf->trapno)
+  cprintf("Process %d got trap! number: %d\n", myproc()->pid, tf->trapno);
 
   switch(tf->trapno){
   case T_IRQ0 + IRQ_TIMER:
@@ -62,7 +62,7 @@ trap(struct trapframe *tf)
 
       // Check if the process has reached the 10-tick time slice
       if (myproc()->ticks >= 10) {
-        cprintf("Trap causes process %d to yield\n", myproc()->pid)
+        cprintf("Trap causes process %d to yield\n", myproc()->pid);
         yield(); // Give up the CPU
       }
     }
