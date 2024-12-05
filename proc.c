@@ -347,12 +347,16 @@ scheduler(void)
     // If a process is selected, run it
     if(selected_proc) {
       p = selected_proc;
+      cprintf("Scheduling process PID: %d with priority: %d\n", p->pid, p->priority);
+
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
 
       swtch(&cpu->scheduler, p->context);
       switchkvm();
+
+      cprintf("Process PID: %d yielded the CPU.\n", p->pid);
 
       proc = 0;
     }
