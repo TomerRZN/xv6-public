@@ -4,12 +4,6 @@
 
 #define NUM_PROCESSES 3  // Number of child processes
 
-void workload(int id, int priority) {
-  for (int i = 0; i < 10; i++) {
-    sleep(5);  // Sleep to make scheduling observable
-  }
-}
-
 int main() {
   int pid;
 
@@ -20,7 +14,7 @@ int main() {
       // Child process: set priority and run workload
       int priority = NUM_PROCESSES - i;  // Assign priorities (e.g., 5, 4, 3, 2, 1)
       setpriority(getpid(), priority);  // Set priority using system call
-      workload(getpid(), priority);
+      sleep(5);
       exit();  // Exit after completing workload
     }
   }
