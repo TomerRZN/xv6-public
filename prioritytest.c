@@ -12,7 +12,7 @@ int main() {
   if (pid == 0) {
     setpriority(getpid(), 2);  // Set child process priority
     int count = 0;
-    while(count < 100000);
+    while(count < 100000)
         count++;
   }
   // Parent process
