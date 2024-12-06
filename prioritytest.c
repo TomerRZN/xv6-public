@@ -9,7 +9,7 @@
 
 void workload() {
   for (int i = 0; i <= ITERATIONS; i++)
-    sleep(0.5); // Sleep for 1 tick
+    sleep(1); // Sleep for 1 tick
 }
 
 
