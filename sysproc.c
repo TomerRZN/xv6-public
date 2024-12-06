@@ -102,12 +102,12 @@ int
 sys_setpriority(void)
 {
   int pid, priority;
-  struct proc *p;
 
   // Get args
   if(argint(0, &pid) < 0 || argint(1, &priority) < 0)
     return -1;
 
+  struct proc *p;
 
   // Modify the priority of the process with the given PID
   acquire(&ptable.lock);

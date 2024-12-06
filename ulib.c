@@ -106,5 +106,5 @@ memmove(void *vdst, const void *vsrc, int n)
 }
 
 int setpriority(int pid, int priority) {
-  return syscall(22, pid, priority);
+  return syscall(23, pid, priority);
 }
