@@ -326,6 +326,8 @@ scheduler(void)
 {
   struct proc *p;
   struct proc *selected_proc;
+  struct cpu *c = mycpu();
+  c->proc = 0;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -346,19 +348,18 @@ scheduler(void)
 
     // If a process is selected, run it
     if(selected_proc) {
-      p = selected_proc;
       cprintf("Scheduling process PID: %d with priority: %d\n", p->pid, p->priority);
 
-      proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      c->proc = selected_proc;
+      switchuvm(selected_proc);
+      selected_proc->state = RUNNING;
 
-      swtch(&(mycpu()->scheduler), p->context);
+      swtch(&(c->scheduler), selected_proc->context);
       switchkvm();
 
-      cprintf("Process PID: %d yielded the CPU.\n", p->pid);
+      cprintf("Process PID: %d yielded the CPU.\n", selected_proc->pid);
 
-      proc = 0;
+      c->proc = 0;
     }
     release(&ptable.lock);
   }
