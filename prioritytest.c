@@ -3,7 +3,7 @@
 #include "user.h"
 
 
-#define NUM_CHILDREN 3
+#define NUM_PROCESSES 3
 #define ITERATIONS 50
 
 
@@ -17,11 +17,11 @@ int main() {
   int pid;
 
   // Create child processes
-  for (int i = 0; i < NUM_CHILDREN; i++) {
+  for (int i = 0; i < NUM_PROCESSES; i++) {
     pid = fork();
     // Child process
     if (pid == 0) {
-        setpriority(getpid(), NUM_CHILDREN - i);
+        setpriority(getpid(), NUM_PROCESSES - i);
         workload();
         exit();
     }
