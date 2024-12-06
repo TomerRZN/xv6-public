@@ -3,22 +3,30 @@
 #include "user.h"
 
 
+#define NUM_CHILDREN 3
+#define ITERATIONS 50
+
+
+void workload() {
+  for (int i = 0; i <= ITERATIONS; i++)
+    sleep(1);
+}
+
+
 int main() {
-  setpriority(getpid(), 1);  // Set parent process priority to 1
+  int pid;
 
-  int pid = fork();
-
-  // Child process
-  if (pid == 0) {
-    setpriority(getpid(), 2);  // Set child process priority
-    int count = 0;
-    while(count < 100000)
-        count++;
+  // Create child processes
+  for (int i = 0; i < NUM_CHILDREN; i++) {
+    pid = fork();
+    // Child process
+    if (pid == 0) {
+        setpriority(getpid(), NUM_CHILDREN - i);
+        workload();
+        exit();
+    }
   }
   // Parent process
-  else {
-    setpriority(getpid(), 3); // Let the child finish first
-    wait();
-  }
+  wait();
   exit();
 }
