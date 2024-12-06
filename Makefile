@@ -182,7 +182,7 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_hello\
-	_testpriority\
+	_prioritytest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
