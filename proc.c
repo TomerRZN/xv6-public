@@ -374,7 +374,7 @@ scheduler(void)
 
       // Only print when scheduler switching process
       if (selected_pid != selected_proc->pid)
-        cprintf("Scheduling process PID: %d with priority: %d\n", p->pid, p->priority);
+        cprintf("Scheduling process PID: %d with priority: %d\n", selected_proc->pid, selected_proc->priority);
 
       selected_pid = selected_proc->pid;
 
