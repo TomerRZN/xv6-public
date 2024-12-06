@@ -16,7 +16,7 @@ int main() {
       int priority = NUM_PROCESSES - i + 1;
       setpriority(getpid(), priority);
       for(int count = 0; count < 100; count++)
-        continue
+        continue;
       exit();
     }
   }
