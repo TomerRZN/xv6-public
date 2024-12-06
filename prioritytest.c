@@ -14,7 +14,7 @@ int main() {
     int count = 0;
     while(count < 100000);
         count++;
-
+  }
   // Parent process
   else {
     setpriority(getpid(), 3); // Let the child finish first
