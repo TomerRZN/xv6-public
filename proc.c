@@ -313,6 +313,27 @@ wait(void)
   }
 }
 
+// Set priority for a process
+// Return -1 if process not found
+int
+setpriority(int pid, int priority)
+{
+  struct proc *p;
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->pid == pid) {
+      p->priority = priority;  // Update priority
+      release(&ptable.lock);
+      return 0;  // Success
+    }
+  }
+
+  // Fallback
+  release(&ptable.lock);
+  return -1;
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.

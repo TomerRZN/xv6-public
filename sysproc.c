@@ -107,19 +107,5 @@ sys_setpriority(void)
   if(argint(0, &pid) < 0 || argint(1, &priority) < 0)
     return -1;
 
-  struct proc *p;
-
-  // Modify the priority of the process with the given PID
-  acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-    if(p->pid == pid) {
-      p->priority = priority;  // Update priority
-      release(&ptable.lock);
-      return 0;  // Success
-    }
-  }
-
-  // Fallback
-  release(&ptable.lock);
-  return -1;
+  return setpriority(pid, priority);
 }
