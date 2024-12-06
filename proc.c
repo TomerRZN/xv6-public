@@ -89,6 +89,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
 
+  p->priority = 10; // Set default
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -111,7 +113,6 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
-  p->priority = 10; // Set default
 
   return p;
 }
