@@ -353,7 +353,7 @@ scheduler(void)
       switchuvm(p);
       p->state = RUNNING;
 
-      swtch(&cpu->scheduler, p->context);
+      swtch(&(mycpu()->scheduler), p->context);
       switchkvm();
 
       cprintf("Process PID: %d yielded the CPU.\n", p->pid);
