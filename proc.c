@@ -89,6 +89,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
 
+  p->priority = 10; // Set default
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -311,6 +313,27 @@ wait(void)
   }
 }
 
+// Set priority for a process
+// Return -1 if process not found
+int
+setpriority(int pid, int priority)
+{
+  struct proc *p;
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if(p->pid == pid) {
+      p->priority = priority;  // Update priority
+      release(&ptable.lock);
+      return 0;  // Success
+    }
+  }
+
+  // Fallback
+  release(&ptable.lock);
+  return -1;
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -323,35 +346,49 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *selected_proc;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
+  int selected_pid;
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
+    selected_proc = 0;  // Reset selected process pointer
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+    // Iterate through the process table to find the highest-priority RUNNABLE process
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if(p->state == RUNNABLE) {
+        if(selected_proc == 0 || p->priority < selected_proc->priority) {
+          selected_proc = p;  // Update to the process with the highest priority
+        }
+      }
+    }
 
-      swtch(&(c->scheduler), p->context);
+    // No process to run
+    if(selected_proc) {
+
+      // Only print when scheduler switching process
+      if (selected_pid != selected_proc->pid)
+        cprintf("Scheduling process PID: %d with priority: %d\n", selected_proc->pid, selected_proc->priority);
+
+      selected_pid = selected_proc->pid;
+
+      // If a process is selected, run it
+      c->proc = selected_proc;
+      switchuvm(selected_proc);
+      selected_proc->state = RUNNING;
+
+      swtch(&(c->scheduler), selected_proc->context);
       switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
     }
+    c->proc = 0;
     release(&ptable.lock);
-
   }
 }
 

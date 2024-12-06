@@ -96,3 +96,16 @@ sys_hello(void)
   cprintf("Hello from xv6!\n");
   return 0;
 }
+
+
+int
+sys_setpriority(void)
+{
+  int pid, priority;
+
+  // Get args
+  if(argint(0, &pid) < 0 || argint(1, &priority) < 0)
+    return -1;
+
+  return setpriority(pid, priority);
+}
