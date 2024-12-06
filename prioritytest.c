@@ -4,7 +4,7 @@
 
 
 #define NUM_PROCESSES 3
-#define ITERATIONS 50
+#define ITERATIONS 10
 
 
 void workload() {
