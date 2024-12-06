@@ -76,8 +76,6 @@ allocproc(void)
   struct proc *p;
   char *sp;
 
-  p->priority = 10; // Set default
-
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -113,6 +111,7 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  p->priority = 10; // Set default
 
   return p;
 }
