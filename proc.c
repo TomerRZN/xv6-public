@@ -350,6 +350,8 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
 
+  int selected_pid;
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
@@ -367,10 +369,16 @@ scheduler(void)
       }
     }
 
-    // If a process is selected, run it
+    // No process to run
     if(selected_proc) {
-      cprintf("Scheduling process PID: %d with priority: %d\n", p->pid, p->priority);
 
+      // Only print when scheduler switching process
+      if (selected_pid != selected_proc->pid)
+        cprintf("Scheduling process PID: %d with priority: %d\n", p->pid, p->priority);
+
+      selected_pid = selected_proc->pid;
+
+      // If a process is selected, run it
       c->proc = selected_proc;
       switchuvm(selected_proc);
       selected_proc->state = RUNNING;
@@ -378,10 +386,8 @@ scheduler(void)
       swtch(&(c->scheduler), selected_proc->context);
       switchkvm();
 
-      cprintf("Process PID: %d yielded the CPU.\n", selected_proc->pid);
-
-      c->proc = 0;
     }
+    c->proc = 0;
     release(&ptable.lock);
   }
 }
