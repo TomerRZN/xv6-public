@@ -15,7 +15,8 @@ int main() {
       // Child process: set priority and run workload
       int priority = NUM_PROCESSES - i + 1;
       setpriority(getpid(), priority);
-      sleep(1000);
+      for(int count = 0; count < 100; count++)
+        continue
       exit();
     }
   }
